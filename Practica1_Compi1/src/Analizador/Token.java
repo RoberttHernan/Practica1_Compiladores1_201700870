@@ -1,8 +1,8 @@
 package Analizador;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+Analizador de archivo No 1
+S= {Com, Numero_Entero, Identificador, '-', '#', '*'}
 
  package OtrasClases;
 
@@ -16,11 +16,11 @@ public class Token {
     public enum Tipo {
 
         NUMERO_ENTERO,
-        SIGNO_POR,
+        COMENTARIO,
         IDENTIFICADOR,
-        COMA,
         ASTERISCO,
         NUMERAL,
+        GUION,
         ULTIMO
 
     }
@@ -44,17 +44,17 @@ public class Token {
         switch (tipoToken) {
 
             case NUMERO_ENTERO:
-                return "Numero entero";
-            case SIGNO_POR:
-                return "Signo Por";
+                return "Numero_entero";
+            case COMENTARIO:
+                    return "comentario";
             case IDENTIFICADOR:
                 return "Identificador";
-            case COMA:
-                return "Coma";
             case ASTERISCO:
                 return "asterisco";
             case NUMERAL:
                 return "numeral";
+            case GUION:
+                return "guion";
             default:
                 return "Desconocido";
 

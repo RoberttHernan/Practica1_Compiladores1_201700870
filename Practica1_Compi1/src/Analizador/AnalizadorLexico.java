@@ -55,7 +55,12 @@ public class AnalizadorLexico {
                     } else if (c == '#' && i != entrada.length() - 1) {
                         lexema += c;
                         AddToken(Token.Tipo.NUMERAL);
-                    } else {
+                    }
+                    else if(c=='-'){
+                    lexema +=c;
+                        AddToken(Token.Tipo.GUION);
+                    }
+                    else {
                         if (c == '#' && i == entrada.length() - 1) {
                             System.out.println("Analisis concluido con exito ");
                         } else {
@@ -89,17 +94,6 @@ public class AnalizadorLexico {
                         AddToken(Token.Tipo.NUMERO_ENTERO);
                         i--;
                     }
-                    break;
-
-                case 3:
-                    if (c=='x'){
-                        AddToken(Token.Tipo.SIGNO_POR);
-                        lexema = "";
-                        estado = 0;
-                    }
-                    break;
-                case 4:
-                    
                     break;
                 default:
                     System.out.println("Error lexico en " + c);

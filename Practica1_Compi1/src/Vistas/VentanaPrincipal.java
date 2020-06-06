@@ -6,7 +6,12 @@
 package Vistas;
 
 import Analizador.AnalizadorLexico;
+import Analizador.AnalizadorLexico2;
 import Analizador.Token;
+import Analizador.Token2;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import juego.Tetris;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,10 +19,12 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.FileChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+
 import javax.swing.filechooser.FileNameExtensionFilter;
+import juego.Coordenada;
+import juego.Nivel;
 
 /**
  *
@@ -25,11 +32,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form VentanaPrincipal
-     */
+    LinkedList<Token> lista1;
+    LinkedList<Token2> lista;
+    LinkedList<Nivel> listaNiveles = new LinkedList<>();
+    LinkedList<Integer> listaInstrucciones = new LinkedList<>();// lista de piezas
+
     public VentanaPrincipal() {
         initComponents();
+
     }
 
     /**
@@ -53,9 +63,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabelSintexto = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButtonAnalizarArchivo2 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jComboBoxNivelSeleccionado = new javax.swing.JComboBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         jLabel3.setText("jLabel3");
 
@@ -74,7 +88,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Analizar.setText("Analizar");
+        Analizar.setText("Analizar Archivo1");
         Analizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AnalizarActionPerformed(evt);
@@ -102,6 +116,20 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        jButtonAnalizarArchivo2.setText("Analizar Archivo2");
+        jButtonAnalizarArchivo2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAnalizarArchivo2ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Niveles");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -111,24 +139,27 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addComponent(jLabelSintexto)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(51, 51, 51)
+                .addComponent(jButton1)
+                .addGap(28, 28, 28)
+                .addComponent(jComboBoxNivelSeleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(395, 395, 395)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(Analizar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel2)
+                    .addComponent(jButtonAnalizarArchivo2))
                 .addGap(29, 29, 29))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(549, 549, 549)
-                        .addComponent(Analizar))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(jButton1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(275, 275, 275))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,10 +173,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
-                .addGap(50, 50, 50)
-                .addComponent(Analizar)
-                .addGap(42, 42, 42)
-                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Analizar)
+                    .addComponent(jButtonAnalizarArchivo2))
+                .addGap(46, 46, 46)
+                .addComponent(jButton2)
+                .addGap(12, 12, 12)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jComboBoxNivelSeleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(110, Short.MAX_VALUE))
         );
 
@@ -158,6 +195,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("Archivo2");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
 
         jMenuBar1.add(jMenu1);
 
@@ -179,27 +224,26 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private void AnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AnalizarActionPerformed
         AnalizadorLexico lex = new AnalizadorLexico();
-        LinkedList<Token> lista = lex.AnalizadorCadena(jTextAreaArchivo1.getText());
-        lex.imprimirListaTokens(lista);
+        lista1 = lex.AnalizadorCadena(jTextAreaArchivo1.getText());
+        //lex.imprimirListaTokens(lista1);
     }//GEN-LAST:event_AnalizarActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         FileReader fr = null;
         String codigo = new String();
         try {
-            
+
             JFileChooser fileChooser = new JFileChooser();
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Trs", "trs");
             fileChooser.setFileFilter(filter);
             int seleccion = fileChooser.showDialog(jLabelSintexto, null);
             fr = new FileReader(fileChooser.getSelectedFile());
             BufferedReader entrada = new BufferedReader(fr);
-            
-           
-            while (entrada.ready()){
-            codigo += entrada.readLine()+"\n";
+
+            while (entrada.ready()) {
+                codigo += entrada.readLine() + "\n";
             }
-            
+
         } catch (FileNotFoundException ex) {
             Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -215,11 +259,110 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      JFrame f = new JFrame();
-      f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      f.setSize(12*26+10, 26*23+25);
-      f.setVisible(true);
+        int fil = listaNiveles.get(jComboBoxNivelSeleccionado.getSelectedIndex()).getFilas();
+        int col = listaNiveles.get(jComboBoxNivelSeleccionado.getSelectedIndex()).getColumnas();
+
+        JFrame f = new JFrame("Tetris");
+
+        f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        f.setSize(26 * col + 19, 26 * fil + 55);
+        f.setVisible(true);
+
+        final Tetris game = new Tetris(fil+1, col);
+        game.setCoordenadasOcupadas(listaNiveles.get(jComboBoxNivelSeleccionado.getSelectedIndex()).getLista_coordenadas());
+        game.setListaNumeros(listaInstrucciones);
+        game.init();
+        f.add(game);
+
+        f.addKeyListener(new KeyListener() {
+			public void keyTyped(KeyEvent e) {
+			}
+			
+			public void keyPressed(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_UP:
+					game.rotar(-1);
+					break;
+				case KeyEvent.VK_DOWN:
+					game.rotar(+1);
+					break;
+				case KeyEvent.VK_LEFT:
+					game.mover(-1);
+					break;
+				case KeyEvent.VK_RIGHT:
+					game.mover(+1);
+					break;
+				case KeyEvent.VK_SPACE:
+					game.dropDown();
+					
+					break;
+				} 
+			}
+			
+			public void keyReleased(KeyEvent e) {
+			}
+		});
+        
+        new Thread() {
+			@Override public void run() {
+				while (true) {
+					try {
+						Thread.sleep(1000);
+						game.dropDown();
+					} catch ( InterruptedException e ) {}
+				}
+			}
+		}.start();
+
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButtonAnalizarArchivo2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnalizarArchivo2ActionPerformed
+        AnalizadorLexico2 lex = new AnalizadorLexico2();
+        lista = lex.AnalizadorCadena(jTextAreaArchivo2.getText());
+        lex.imprimirListaTokens(lista);
+    }//GEN-LAST:event_jButtonAnalizarArchivo2ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        FileReader fr = null;
+        String codigo = new String();
+        try {
+
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Pzs", "pzs");
+            fileChooser.setFileFilter(filter);
+            int seleccion = fileChooser.showDialog(jLabelSintexto, null);
+            fr = new FileReader(fileChooser.getSelectedFile());
+            BufferedReader entrada = new BufferedReader(fr);
+
+            while (entrada.ready()) {
+                codigo += entrada.readLine() + "\n";
+            }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fr.close();
+            } catch (IOException ex) {
+                Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        jTextAreaArchivo2.setText(codigo);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        CargarNiveles(lista1);
+        if (!listaNiveles.isEmpty()) {
+            for (Nivel nivel : listaNiveles) {
+                jComboBoxNivelSeleccionado.addItem(nivel.getNombre_nivel());
+            }
+        }
+        CargarPiezas(lista);
+        
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -259,6 +402,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Analizar;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonAnalizarArchivo2;
+    private javax.swing.JComboBox jComboBoxNivelSeleccionado;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -267,10 +413,181 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextAreaArchivo1;
     private javax.swing.JTextArea jTextAreaArchivo2;
     // End of variables declaration//GEN-END:variables
+
+    private void CargarNiveles(LinkedList<Token> lista) {
+        int cantidad_niveles = 0;
+        int tamanio_tablero = 0;
+        String nombre_nivel;
+        int n;
+        int p;
+
+        for (int i = 0; i < lista.size(); i++) {
+            if (i == 0) {
+                cantidad_niveles = Integer.parseInt(lista.get(i).getValor());
+            } else {
+                String tipoDato = lista.get(i).getTipoString();
+
+                switch (tipoDato) {
+                    case "Numero_entero":
+                        Nivel nivel_temp = new Nivel();
+                        n = Integer.parseInt(lista.get(i).getValor());
+                        i = i + 2;
+                        p = Integer.parseInt(lista.get(i).getValor());
+                        i++;
+                        nombre_nivel = lista.get(i).getValor();
+                        nivel_temp.setNombre_nivel(nombre_nivel);
+                        nivel_temp.setFilas(n);
+                        nivel_temp.setColumnas(p);
+                        i++;
+                        for (int f = 0; f < n; f++) {
+                            for (int c = 0; c < p; c++) {
+                                if (lista.get(i).getTipoString().equals("asterisco")) {
+                                    nivel_temp.getLista_coordenadas().add(new Coordenada(f, c));
+                                }
+                                i++;
+                            }
+
+                        }
+                        listaNiveles.add(nivel_temp);
+                        i--;
+                        break;
+
+                    default:
+
+                        break;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    private void CargarPiezas(LinkedList<Token2> lista) {
+        int estado = 0;
+        for (int i = 0; i < lista.size(); i++) {
+            switch (lista.get(i).getTipoString()) {
+                case "I":
+                    estado = 1;
+                    i = i + 2;
+                    break;
+                case "J":
+                    estado = 2;
+                    i = i + 2;
+                    break;
+                case "L":
+                    estado = 3;
+                    i = i + 2;
+                    break;
+                case "O":
+                    estado = 4;
+                    i = i + 2;
+                    break;
+                case "S":
+                    estado = 5;
+                    i = i + 2;
+                    break;
+                case "Z":
+                    estado = 6;
+                    i = i + 2;
+                    break;
+                case "T":
+                    estado = 7;
+                    i = i + 2;
+                    break;
+                default:
+                    System.out.println("Error");
+                    break;
+            }
+
+            switch (estado) {
+                case 1:
+                    if (lista.get(i).getValor().equals("^") || lista.get(i).getValor().equals("v")){
+                    listaInstrucciones.add(7);
+                    }
+                    if (lista.get(i).getValor().equals("<") || lista.get(i).getValor().equals(">")){
+                    listaInstrucciones.add(0);
+                    }
+                   
+                    break;
+                case 2://J
+                    if (lista.get(i).getValor().equals("^")){
+                    listaInstrucciones.add(11);
+                    }
+                    if (lista.get(i).getValor().equals("v")){
+                    listaInstrucciones.add(13);
+                    }
+                    if (lista.get(i).getValor().equals("<")){
+                    listaInstrucciones.add(2);
+                    }
+                    if (lista.get(i).getValor().equals(">")){
+                    listaInstrucciones.add(12);
+                    }
+                    
+                    break;
+                case 3: // L
+                    if (lista.get(i).getValor().equals("^")){
+                    listaInstrucciones.add(8);
+                    }
+                    if (lista.get(i).getValor().equals("v")){
+                    listaInstrucciones.add(10);
+                    }
+                    if (lista.get(i).getValor().equals("<")){
+                    listaInstrucciones.add(1);
+                    }
+                    if (lista.get(i).getValor().equals(">")){
+                    listaInstrucciones.add(9);
+                    }
+                   
+                    break;
+                case 4://O
+                    listaInstrucciones.add(3);
+                   
+                    break;
+                case 5:// S
+                    if (lista.get(i).getValor().equals("^")||lista.get(i).getValor().equals("v")){
+                    listaInstrucciones.add(4);
+                    }
+                    if (lista.get(i).getValor().equals("<")||lista.get(i).getValor().equals(">")){
+                    listaInstrucciones.add(14);
+                    }
+                   
+                    break;
+                case 6: // Z
+                    if (lista.get(i).getValor().equals("^")||lista.get(i).getValor().equals("v")){
+                    listaInstrucciones.add(6);
+                    }
+                    if (lista.get(i).getValor().equals("<")||lista.get(i).getValor().equals(">")){
+                    listaInstrucciones.add(18);
+                    }
+                 
+                    break;
+                case 7:// T
+                    if (lista.get(i).getValor().equals("^")){
+                    listaInstrucciones.add(16);
+                    }
+                    if (lista.get(i).getValor().equals("v")){
+                    listaInstrucciones.add(5);
+                    }
+                    if (lista.get(i).getValor().equals("<")){
+                    listaInstrucciones.add(15);
+                    }
+                    if (lista.get(i).getValor().equals(">")){
+                    listaInstrucciones.add(17);
+                    }
+                   
+                   
+                    break;
+            }
+
+        }
+    }
 }
