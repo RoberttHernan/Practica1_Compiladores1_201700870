@@ -3,11 +3,7 @@ package juego;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Tetris extends JPanel {
@@ -265,9 +261,10 @@ public class Tetris extends JPanel {
     }
 
     public void BorrarFila(int fila) {
-        for (int i = fila - 1; i > 0; i--) {
-            for (int j = 1; j < col; j++) {
-                well[j][i + 1] = well[j][i];
+        for (int i = fila-1; i > 0; i--) {
+            for (int j = 0; j < col; j++) {
+                well[i+1][j] = well[i][j];
+                
             }
         }
     }
@@ -275,13 +272,17 @@ public class Tetris extends JPanel {
     public void LimpiarFilas() {
         boolean bandera;
         int n = 0;
-        for (int j = col; j > 0; j--) {
+        for (int j = fil-2; j > 0; j--) {
+
             bandera = false;
-            for (int i = 1; i < fil; i++) {
-                bandera = true;
-                break;
+            for (int i = 0; i < col; i++) {
+                if (well[j][i] == Color.WHITE) {
+                    bandera = true;
+                    break;
+                }
             }
             if (!bandera) {
+
                 BorrarFila(j);
                 j++;
                 n++;
