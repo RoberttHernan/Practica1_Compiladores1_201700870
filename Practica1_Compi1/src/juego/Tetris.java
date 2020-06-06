@@ -23,7 +23,7 @@ public class Tetris extends JPanel {
 
     private LinkedList<Integer> listaNumeros = new LinkedList<>();// lista de numero que vienen del analisis
 
-    private  int score;
+    private int score;
     private Color[][] well;
 
     public Tetris(int filas, int col) {
@@ -191,13 +191,12 @@ public class Tetris extends JPanel {
 
         for (int i = 0; i < fil; i++) {
             for (int j = 0; j < col; j++) {
-                
+
                 if (buscarCoordenada(coordenadasOcupadas, i, j)) {
                     well[i][j] = Color.red;
-                }
-                else if (i == fil-1){
-                well[i][j] = Color.gray;
-                }else {
+                } else if (i == fil - 1) {
+                    well[i][j] = Color.gray;
+                } else {
                     well[i][j] = Color.WHITE;
                 }
             }
@@ -205,16 +204,18 @@ public class Tetris extends JPanel {
         PiezaNueva();
     }
 
-    public void mover (int i){
-    piezaOrigen.x += i;
-    repaint();
+    public void mover(int i) {
+        piezaOrigen.x += i;
+        repaint();
     }
+
     public void PiezaNueva() {
         piezaOrigen = new Point(1, 0);
         rotacion = 0;
         if (listaPiezas.isEmpty()) {
-
-            Collections.addAll(listaPiezas, 1, 2, 3, 4, 5, 6);
+            for (int n : listaNumeros) {
+                listaPiezas.add(n);
+            }
 
         }
         piezaActual = listaPiezas.get(0);
@@ -223,9 +224,9 @@ public class Tetris extends JPanel {
 
     private boolean colision(int x, int y, int rotacion) {
         for (Point p : formas[piezaActual][rotacion]) {
-            
-            if (y==fil-1){
-            return true;
+
+            if (y == fil - 1) {
+                return true;
             }
             if (well[(int) p.getY() + y][(int) p.getX() + x] != Color.WHITE) {
                 return true;
@@ -264,7 +265,7 @@ public class Tetris extends JPanel {
     }
 
     public void BorrarFila(int fila) {
-        for (int i = fila-1; i > 0; i--) {
+        for (int i = fila - 1; i > 0; i--) {
             for (int j = 1; j < col; j++) {
                 well[j][i + 1] = well[j][i];
             }
@@ -274,9 +275,9 @@ public class Tetris extends JPanel {
     public void LimpiarFilas() {
         boolean bandera;
         int n = 0;
-        for (int j = fil; j > 0; j--) {
+        for (int j = col; j > 0; j--) {
             bandera = false;
-            for (int i = 1; i < col; i++) {
+            for (int i = 1; i < fil; i++) {
                 bandera = true;
                 break;
             }
