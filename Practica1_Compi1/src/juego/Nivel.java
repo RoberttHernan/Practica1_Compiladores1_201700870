@@ -5,22 +5,38 @@ import java.util.LinkedList;
 /**
  *
  * @author Robert Hernandez
+ * Clase que representa un nivel en el juego
  */
 public class Nivel {
 
+    /**
+     * String que representa el nombre del nivel
+     */
     String nombre_nivel;
+    /**
+     * Lista de coordenadas del tablero
+     */
     LinkedList<Coordenada> lista_coordenadas;
+    /**
+     * Entero que representa el tanaño total del tablero
+     */
     int tamanio_tablero;
+    /**
+     * Entero que representa la filas del tablero
+     */
     private int filas;
+
 
     public int getFilas() {
         return filas;
     }
 
+
     public void setFilas(int filas) {
         this.filas = filas;
     }
 
+    
     public int getColumnas() {
         return columnas;
     }
@@ -38,6 +54,10 @@ public class Nivel {
         this.tamanio_tablero = tamanio_tablero;
     }
 
+    /**
+     * Constructo de la clase nivel
+     * Inicializa el nombre y la lista de coordenadas
+     */
     public Nivel() {
         this.nombre_nivel = "";
         lista_coordenadas = new LinkedList<>();
@@ -60,6 +80,10 @@ public class Nivel {
         this.lista_coordenadas = lista_coordenadas;
     }
 
+    /**
+     * Imprime la lista de coordenadas
+     * @return retorna el string de la impresion del metodo
+     */
     private String imprimirCoordenadas ()
     {
     
